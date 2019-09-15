@@ -1,0 +1,50 @@
+import pandas as pd
+
+excel = pd.ExcelFile("Broad Type of Service_Assistance at Operations in VIC.xlsx")
+excel.sheet_names
+df = pd.read_excel("Broad Type of Service_Assistance at Operations in VIC.xlsx", sheet_name =excel.sheet_names[0] )
+df.tail()
+df = df.drop([0,137,138])
+df = df.reset_index(drop = True)
+
+in_out = []
+out = []
+year = []
+first_year = 2018
+for i in range(0, df.shape[0], 4):
+    a = df['In_and_Out_of_Hospital'][i]
+    b = df['In_and_Out_of_Hospital'][i + 1]
+    c = df['In_and_Out_of_Hospital'][i + 2]
+    d = df['In_and_Out_of_Hospital'][i + 3]
+    ave_in_out = (a + b + c + d) / 4
+    in_out.append(ave_in_out)
+    
+    q = df["Out_of_Hospital"][i]
+    w = df["Out_of_Hospital"][i + 1]
+    e = df["Out_of_Hospital"][i + 2]
+    r = df["Out_of_Hospital"][i + 3]
+    ave_out = (q + w + e + r) / 4
+    out.append(ave_out)
+    year.append(first_year)
+    first_year -= 1
+    
+    
+print(in_out)
+print("===")
+print(out)
+print("===")
+print(year)
+
+# reverse them
+in_out.reverse()
+out.reverse()
+year.reverse()
+
+
+data = {"Year" : year,
+       "Bulk_Billing_Rate(In_and_Out_of_Hospital)" : in_out,
+       "Bulk_Billing_Rate(Out_of_Hospital)" : out}
+new_df = pd.DataFrame(data)
+new_df
+
+new_df.to_csv("Broad Type of Service_Assistance at Operations in VIC.csv")
